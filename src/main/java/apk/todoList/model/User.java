@@ -1,7 +1,5 @@
 package apk.todoList.model;
 
-
-import apk.todoList.controller.dto.UserDTO;
 import apk.todoList.controller.dto.UserResponseDTO;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -104,5 +102,18 @@ public class User {
 
     public UserResponseDTO mapToDTO() {
         return new UserResponseDTO( name, email );
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", todos=" + todos +
+                ", createdAt=" + createdAt +
+                ", updateAt=" + updateAt +
+                '}';
     }
 }

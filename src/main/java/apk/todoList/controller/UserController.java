@@ -1,9 +1,10 @@
 package apk.todoList.controller;
 
 import apk.todoList.controller.dto.UserDTO;
+import apk.todoList.controller.dto.UserResponseDTO;
 import apk.todoList.model.User;
 import apk.todoList.repository.UserRepository;
-import org.apache.coyote.Response;
+import apk.todoList.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,10 @@ public class UserController {
     @Autowired
     UserRepository repository;
 
+    @Autowired
+    UserService service;
+
+
     @GetMapping("{id}")
     public ResponseEntity<Object> getById(@PathVariable("id") String id) {
         UUID userId = UUID.fromString(id);
@@ -36,7 +41,7 @@ public class UserController {
     @PostMapping
     public ResponseEntity<Void> craete(@RequestBody UserDTO dto) {
         User newUser = dto.mapToUser();
-        repository.save(newUser);
+        service.save(newUser);
 
         URI headerLocationUri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -45,5 +50,37 @@ public class UserController {
                 .toUri();
 
         return ResponseEntity.created(headerLocationUri).build();
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<Object> update(
+            @PathVariable("id") String id,
+            @RequestBody UserDTO dto
+    ) {
+
+        var user = service.getById(UUID.fromString(id));
+        
+
+
+        if (user.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        User uptUser = user.get();
+        if (dto.name() != null) {
+            uptUser.setName(dto.name());
+        }
+        if (dto.password() != null) {
+            uptUser.setPassword(dto.password());
+        }
+        if (dto.email() != null) {
+            uptUser.setEmail(dto.email());
+        }
+        service.save(uptUser);
+
+        return new ResponseEntity<Object>(uptUser.mapToDTO(), HttpStatus.OK);
+
+
+
     }
 }
