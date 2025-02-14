@@ -1,6 +1,7 @@
 package apk.todoList.model;
 
-import apk.todoList.controller.dto.UserResponseDTO;
+import apk.todoList.controller.dto.user.UserResponseDTO;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
@@ -33,7 +34,8 @@ public class User {
     @Column(name = "password", length = 255, nullable = false)
     private String password;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonManagedReference
     List<Todo> todos;
 
     @CreatedDate

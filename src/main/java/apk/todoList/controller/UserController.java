@@ -1,7 +1,6 @@
 package apk.todoList.controller;
 
-import apk.todoList.controller.dto.UserDTO;
-import apk.todoList.controller.dto.UserResponseDTO;
+import apk.todoList.controller.dto.user.UserDTO;
 import apk.todoList.model.User;
 import apk.todoList.repository.UserRepository;
 import apk.todoList.service.UserService;
@@ -59,8 +58,6 @@ public class UserController {
     ) {
 
         var user = service.getById(UUID.fromString(id));
-        
-
 
         if (user.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -79,8 +76,20 @@ public class UserController {
         service.save(uptUser);
 
         return new ResponseEntity<Object>(uptUser.mapToDTO(), HttpStatus.OK);
+    }
 
+    @DeleteMapping
+    public ResponseEntity<Void> delete (
+            @PathVariable("id") String id
+    ){
 
+        Optional<User> user = service.getById(UUID.fromString(id));
 
+        if (user.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        service.delete(user.get());
+        return ResponseEntity.noContent().build();
     }
 }

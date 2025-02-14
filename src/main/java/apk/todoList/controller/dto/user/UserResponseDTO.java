@@ -1,4 +1,4 @@
-package apk.todoList.controller.dto;
+package apk.todoList.controller.dto.user;
 
 import apk.todoList.model.User;
 
