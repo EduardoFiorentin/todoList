@@ -5,6 +5,7 @@ import apk.todoList.model.Todo;
 import apk.todoList.model.User;
 import apk.todoList.service.TodoService;
 import apk.todoList.service.UserService;
+import jakarta.validation.Valid;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -57,7 +58,7 @@ public class TodoController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> save(@RequestBody TodoDTO dto) {
+    public ResponseEntity<Void> save(@RequestBody @Valid TodoDTO dto) {
 
         if (dto.user() == null) {
             return ResponseEntity.badRequest().build();
