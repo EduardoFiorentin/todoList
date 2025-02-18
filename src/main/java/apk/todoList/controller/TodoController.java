@@ -1,18 +1,17 @@
 package apk.todoList.controller;
 
 import apk.todoList.controller.dto.todos.TodoDTO;
+import apk.todoList.exceptions.InvalidFieldException;
 import apk.todoList.model.Todo;
 import apk.todoList.model.User;
 import apk.todoList.service.TodoService;
 import apk.todoList.service.UserService;
 import jakarta.validation.Valid;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.swing.text.html.Option;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -60,18 +59,14 @@ public class TodoController {
     @PostMapping
     public ResponseEntity<Void> save(@RequestBody @Valid TodoDTO dto) {
 
-        if (dto.user() == null) {
-            return ResponseEntity.badRequest().build();
-        }
 
         Optional<User> user = userService.getById(UUID.fromString(dto.user()));
 
         if (user.isEmpty()) {
-            return ResponseEntity.badRequest().build();
+            throw new InvalidFieldException("user", "User não encontrado!");
         }
 
         Todo todo = dto.mapToEntity(user.get());
-        System.out.println(todo.toString());
         service.save(todo);
 
         URI uri = ServletUriComponentsBuilder
@@ -86,7 +81,7 @@ public class TodoController {
     @PutMapping("{id}")
     public ResponseEntity<Void> update(
             @PathVariable String id,
-            @RequestBody TodoDTO dto
+            @RequestBody @Valid TodoDTO dto
     ) {
         Optional<Todo> todoOpt = service.getById(UUID.fromString(id));
         if (todoOpt.isEmpty()) {

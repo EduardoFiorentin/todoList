@@ -4,6 +4,7 @@ import apk.todoList.controller.dto.user.UserDTO;
 import apk.todoList.model.User;
 import apk.todoList.repository.UserRepository;
 import apk.todoList.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +39,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> craete(@RequestBody UserDTO dto) {
+    public ResponseEntity<Void> craete(@RequestBody @Valid UserDTO dto) {
         User newUser = dto.mapToUser();
         service.save(newUser);
 
@@ -54,7 +55,7 @@ public class UserController {
     @PutMapping("{id}")
     public ResponseEntity<Object> update(
             @PathVariable("id") String id,
-            @RequestBody UserDTO dto
+            @RequestBody @Valid UserDTO dto
     ) {
 
         var user = service.getById(UUID.fromString(id));
